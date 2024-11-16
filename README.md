@@ -1,31 +1,18 @@
-# SLIM
+# Message PSR-7
 
-Slim est un framework minimaliste.
+Afin de recevoir et répondre à des messages HTTP,
+le FIG a rédigé un ensemble de contrats pour que le code PHP cohabite au plus proche
+des règles établies par les RFC de HTTP.
 
-Pour pouvoir commencer à travailler avec, 
-il y a 3 concepts de base à apprendre : 
+PSR-7 est celle qui régie les messages.
+Lire : https://www.php-fig.org/psr/psr-7/
 
-- Les messages HTTP avec PSR-7
-- Le routing
-- Manipuler la requête et la réponse avec des Middlewares
+Il faut ajouter une implémentation de ces interfaces.
+Il est possible de les créer soit, ou d'utiliser une librairie.
 
-Pour produire un projet que l'on puisse tester et déployer, 
-il faut introduire les notions suivantes : 
+Prenons celle fournie par le framework : 
 
-- Dependency Injection Container
-- Organiser le code du framework
-    - Configuration
-    - Séparation des environnements
-  
-Pour atteindre une qualité de projet sur long terme
-Il faut enfin introduire les notions suivantes : 
-
-- Organiser son code en séparant les responsabilités.
-- Tester son code
-
-## Installation
-
-`composer require slim/slim`
+`composer require slim/psr7`
 
 ## Etape suivante :
 
