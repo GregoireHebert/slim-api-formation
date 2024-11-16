@@ -1,19 +1,55 @@
-# Message PSR-7
+# Hello-world
 
-Afin de recevoir et répondre à des messages HTTP,
-le FIG a rédigé un ensemble de contrats pour que le code PHP cohabite au plus proche
-des règles établies par les RFC de HTTP.
+Slim s'appuie sur le pattern front-controller.
+Un seul fichier index, va recevoir toutes les requêtes et charger le code PHP dynamiquement.
 
-PSR-7 est celle qui régie les messages.
-Lire : https://www.php-fig.org/psr/psr-7/
+Dans un répertoire public, créer un fichier `index.php`.
 
-Il faut ajouter une implémentation de ces interfaces.
-Il est possible de les créer soit, ou d'utiliser une librairie.
+```php
+<?php
 
-Prenons celle fournie par le framework : 
+// Déclarer les namespaces responsable des réponses et requêtes.
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+// Déclarer le namespace de la classe qui peut fournir le noyau de slim
+use Slim\Factory\AppFactory;
 
-`composer require slim/psr7`
+// Parce que nous utilisons composer, importer son autoload.
+require __DIR__ . '/../vendor/autoload.php';
+
+// Créer une instance de slim
+$app = AppFactory::create();
+
+// Ajouter une route pour laquelle Slim peut répondre.
+$app->get('/', function (Request $request, Response $response) {
+    $response->getBody()->write("Hello world!");
+    return $response;
+});
+
+// Exécuter l'application
+$app->run();
+```
+
+Pour obtenir Hello world dans votre navigateur, il vous faudra un serveur.
+Commençons par utiliser celui de PHP.
+
+`php -S localhost:8000 -t public`
+
+Zoomez sur le code de la définition de la route.
+Un path, un callable qui reçoit la requête, une réponse (attention ces objets sont immutables) 
+et doit renvoyer une réponse. C'est tout.
+
+Ou presque.
+
+```php
+// Ajouter une route pour laquelle Slim peut répondre.
+$app->get('/{name}', function (Request $request, Response $response, array $args) {
+    // insérez le name dans la réponse à l'aide de $args
+    $response->getBody()->write("Hello !");
+    return $response;
+});
+```
 
 ## Etape suivante :
 
-Aller sur la branche `message-psr7`
+Aller sur la branche `middleware`
