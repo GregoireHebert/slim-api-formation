@@ -1,104 +1,108 @@
-# Environnement
+# Une route, une classe
 
-Pour pouvoir obtenir des comportements adaptés à l'environnement,
-nous allons charger des fichiers de clés de configurations à partir des variables d'environnement de la machine.
+Les routes sont définies dans `routes.php`.
+Oui, mais le code de chaque route devrait être ailleurs.
+Dans un fichier qui lui est propre.
 
-Encore une fois, créons un fichier `settings.php` pour déléguer ce comportement.
+Dans un répertoire `src/Controller`, nous allons ajouter nos classes de contrôleurs.
+
+Allons-y pour reprendre la route d'accueil avec `src/Controller/Home.php`.
 
 ```php
 <?php
 
-// Detect environment
-$_ENV['APP_ENV'] ??= $_SERVER['APP_ENV'] ?? 'dev';
+declare(strict_types=1);
 
-// Load default settings
-$settings = require __DIR__ . '/defaults.php';
+namespace App\Controller;
 
-// Overwrite default settings with environment specific local settings
-$configFiles = [
-    __DIR__ . sprintf('/local.%s.php', $_ENV['APP_ENV']),
-    __DIR__ . '/env.php',
-    __DIR__ . '/../../env.php',
-];
+use Psr\Http\Message\ResponseInterface;
 
-foreach ($configFiles as $configFile) {
-    if (!file_exists($configFile)) {
-        continue;
-    }
+final class Home
+{
+    public function __invoke(ResponseInterface $response): ResponseInterface
+    {
+        $response->getBody()->write('Hello world!');
 
-    $local = require $configFile;
-    if (is_callable($local)) {
-        $settings = $local($settings);
+        return $response;
     }
 }
-
-return $settings;
 ```
 
-Il faut maintenant le charger auprès du container.
-
-```php
-// container.php
-
-return [
-    // Application settings
-    'settings' => fn () => require __DIR__ . '/settings.php',
-    // ...
-];
-```
-
-Vous l'avez remarqué, il faut, pour ce fichier `settings` il faut charger des valeurs nécessaires.
-Un `defaults.php`. 
-Ensuite, des valeurs nécessaires, mais pouvant s'adapter a l'environnement.
-Enfin des valeurs pouvant être apportées par un développeur pour tester des choses.
-
-Le fichier par défaut : 
+Nous pouvons corriger la définition de celle-ci dans `routes.php`.
 
 ```php
 <?php
 
-// Application default settings
+// Define app routes
 
-// Error reporting
-error_reporting(0);
-ini_set('display_errors', '0');
-ini_set('display_startup_errors', '0');
+use Slim\App;
 
-// Timezone
-date_default_timezone_set('Europe/Paris');
-
-$settings = [];
-
-// Error handler
-$settings['error'] = [
-    // Should be set to false for the production environment
-    'display_error_details' => false,
-];
-
-return $settings;
-```
-
-Ensuite, puisque nous sommes en développement, un fichier `local.dev.php` pour cet environnement ! 
-
-```php
-<?php
-
-// Dev environment
-
-return function (array $settings): array {
-    // Error reporting
-    error_reporting(E_ALL);
-    ini_set('display_errors', '1');
-    ini_set('display_startup_errors', '1');
-
-    $settings['error']['display_error_details'] = true;
-
-    return $settings;
+return function (App $app) {
+    $app->get('/', \App\Controller\Home::class);
 };
 ```
 
-C'est ce tableau `$settings` qui contiendra les clés de configuration de slim, mais aussi de toutes les autres librairies ou services que nous pourrions écrire contiendra.
+Simplement, si vous exécutez à nouveau votre page d'accueil dans le navigateur, 
+une erreur de chargement !
+
+Le répertoire `src` et le namespace `App` ne respectent pas psr-4.
+Il faut créer un alias dans le fichier `composer.json`.
+
+Pour cela ajouter sous la clé `require` : 
+
+```json
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+```
+
+Puis demander à composer d'en prendre connaissance : 
+
+```shell
+composer dumpautoload
+```
+
+Essayons de récupérer à nouveau un paramètre de route : 
+
+Ajouter la définition
+
+```php
+$app->get('/{name}', \App\Controller\SayMyName::class);
+```
+
+Puis la classe
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Controller;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+final class SayMyName
+{
+    public function __invoke(ResponseInterface $response, string $name): ResponseInterface
+    {
+        $response->getBody()->write("Hello $name!");
+
+        return $response;
+    }
+}
+```
+
+Mais pour que ça fonctionne, il faut corriger notre définition de l'app dans le container.
+
+```php
+$app = \DI\Bridge\Slim\Bridge::create($container);
+```
+
+C'est ce qui va permettre d'exploiter l'injection, Et de ne réclamer que le nécessaire dans les contrôleurs.
 
 ## Etape suivante :
 
-Aller sur la branche `class-route`
+Aller sur la branche `structure-code`

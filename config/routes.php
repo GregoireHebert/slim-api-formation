@@ -5,8 +5,6 @@
 use Slim\App;
 
 return function (App $app) {
-    $app->get('/', function (\Psr\Http\Message\RequestInterface $request, \Psr\Http\Message\ResponseInterface $response) {
-        $response->getBody()->write("Hello world!");
-        return $response;
-    });
+    $app->get('/', \App\Controller\Home::class);
+    $app->get('/{name}', \App\Controller\SayMyName::class);
 };
