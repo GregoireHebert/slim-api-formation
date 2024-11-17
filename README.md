@@ -1,77 +1,104 @@
-# Bootstrap
+# Environnement
 
-Tout mettre dans `index.php`, n'est pas une bonne idée.
+Pour pouvoir obtenir des comportements adaptés à l'environnement,
+nous allons charger des fichiers de clés de configurations à partir des variables d'environnement de la machine.
 
-Commençons par déléguer la création du Container et de l'App.
-Créer un répertoire `config` et dedans, un fichier `bootstrap.php`
+Encore une fois, créons un fichier `settings.php` pour déléguer ce comportement.
 
 ```php
 <?php
 
-use DI\ContainerBuilder;
-use Slim\App;
+// Detect environment
+$_ENV['APP_ENV'] ??= $_SERVER['APP_ENV'] ?? 'dev';
 
-require_once __DIR__ . '/../vendor/autoload.php';
+// Load default settings
+$settings = require __DIR__ . '/defaults.php';
 
-// Build DI container instance
-$container = (new ContainerBuilder())
-    ->addDefinitions(__DIR__ . '/container.php')
-    ->build();
+// Overwrite default settings with environment specific local settings
+$configFiles = [
+    __DIR__ . sprintf('/local.%s.php', $_ENV['APP_ENV']),
+    __DIR__ . '/env.php',
+    __DIR__ . '/../../env.php',
+];
 
-// Create App instance
-return $container->get(App::class);
+foreach ($configFiles as $configFile) {
+    if (!file_exists($configFile)) {
+        continue;
+    }
+
+    $local = require $configFile;
+    if (is_callable($local)) {
+        $settings = $local($settings);
+    }
+}
+
+return $settings;
 ```
 
-De ce fait, la seule qui restera dans notre index sera : 
+Il faut maintenant le charger auprès du container.
 
 ```php
-<?php
-
-(require __DIR__ . '/../config/bootstrap.php')->run();
-```
-
-Dans le fichier bootstrap, vous avez remarqué la définition provenant de `container.php`. 
-Créons ce fichier.
-
-```php
-<?php
-
-use Psr\Container\ContainerInterface;
-use Slim\App;
-use Slim\Factory\AppFactory;
+// container.php
 
 return [
-    App::class => function (ContainerInterface $container) {
-        $app = AppFactory::createFromContainer($container);
-
-        // Register routes
-        (require __DIR__ . '/routes.php')($app);
-
-        return $app;
-    },
+    // Application settings
+    'settings' => fn () => require __DIR__ . '/settings.php',
+    // ...
 ];
 ```
 
-Ce tableau de configuration permet de nourrir le container et l'application en même temps.
-A nouveau, pour ne pas se retrouver avec des fichiers trop importants au long terme, la configuration des routes dans un fichier `routes.php`.
+Vous l'avez remarqué, il faut, pour ce fichier `settings` il faut charger des valeurs nécessaires.
+Un `defaults.php`. 
+Ensuite, des valeurs nécessaires, mais pouvant s'adapter a l'environnement.
+Enfin des valeurs pouvant être apportées par un développeur pour tester des choses.
 
-Ce fichier contiendra, bien entendu les routes.
+Le fichier par défaut : 
 
 ```php
 <?php
 
-// Define app routes
+// Application default settings
 
-use Slim\App;
+// Error reporting
+error_reporting(0);
+ini_set('display_errors', '0');
+ini_set('display_startup_errors', '0');
 
-return function (App $app) {
-    $app->get('/', function (\Psr\Http\Message\RequestInterface $request, \Psr\Http\Message\ResponseInterface $response) {
-        $response->getBody()->write("Hello world!");
-        return $response;
-    });
+// Timezone
+date_default_timezone_set('Europe/Paris');
+
+$settings = [];
+
+// Error handler
+$settings['error'] = [
+    // Should be set to false for the production environment
+    'display_error_details' => false,
+];
+
+return $settings;
+```
+
+Ensuite, puisque nous sommes en développement, un fichier `local.dev.php` pour cet environnement ! 
+
+```php
+<?php
+
+// Dev environment
+
+return function (array $settings): array {
+    // Error reporting
+    error_reporting(E_ALL);
+    ini_set('display_errors', '1');
+    ini_set('display_startup_errors', '1');
+
+    $settings['error']['display_error_details'] = true;
+
+    return $settings;
 };
 ```
 
+C'est ce tableau `$settings` qui contiendra les clés de configuration de slim, mais aussi de toutes les autres librairies ou services que nous pourrions écrire contiendra.
+
 ## Etape suivante :
 
-Aller sur la branche `environnement`
+Aller sur la branche `class-route`
