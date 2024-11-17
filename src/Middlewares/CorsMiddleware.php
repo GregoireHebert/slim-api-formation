@@ -1,11 +1,3 @@
-# Api
-
-Avant de se lancer, commençons par nous familiariser avec les settings et les middlewares.
-En créant celui qui répondra avec les CORS.
-
-La logique se trouvera dans `src/Middlewares/CorsMiddleware.php`.
-
-```php
 <?php
 
 namespace App\Middlewares;
@@ -47,30 +39,3 @@ final class CorsMiddleware implements MiddlewareInterface
         return $response;
     }
 }
-```
-
-Pour l'appeler, on va démarrer en créer un fichier responsable de le charger ainsi que les suivants.
-Mettons-le dans `src/config/middlewares.php`.
-
-```php
-<?php
-
-use Slim\App;
-use App\Middlewares\CorsMiddleware;
-
-return function (App $app) {
-    $app->addBodyParsingMiddleware();
-    $app->addRoutingMiddleware();
-    $app->add(CorsMiddleware::class);
-};
-```
-
-Et comme pour les routes, importons-le après les routes dans le container.
-
-```php
-(require __DIR__ . '/middlewares.php')($app);
-```
-
-## Etape suivante :
-
-Aller sur la branche `api`

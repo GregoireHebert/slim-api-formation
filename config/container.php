@@ -13,6 +13,10 @@ return [
 
         // Register routes
         (require __DIR__ . '/routes.php')($app);
+        // Register cache
+        (require __DIR__ . '/cache.php')($app);
+        // Register middlewares
+        (require __DIR__ . '/middlewares.php')($app);
 
         return $app;
     },
