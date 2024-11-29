@@ -8,25 +8,23 @@ use ApiPlatform\Metadata\HttpOperation;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use ApiPlatform\State\ProviderInterface;
-use App\Infrastructure\State\Provider\DeserializeProvider;
-use App\Infrastructure\State\Provider\ReadProvider;
-use AutoMapper\AutoMapper;
-use AutoMapper\AutoMapperInterface;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Slim\Psr7\Request;
 
 final class Api
 {
     public function __construct(
-        private readonly ContainerInterface $container,
         private ProviderInterface $provider,
         private ProcessorInterface $processor,
     )
     {
     }
 
-    public function __invoke(Operation $operation, RequestInterface $request, ResponseInterface $response)
+    /**
+     * @param Request $request
+     */
+    public function __invoke(Operation $operation, RequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $uriVariables = $request->getAttribute('__routingResults__')->getRouteArguments();
 
@@ -38,7 +36,7 @@ final class Api
             $operation = $operation->withDeserialize(\in_array($operation->getMethod(), ['POST', 'PUT', 'PATCH'], true));
         }
 
-        $context = ['request' => $request];
+        $context = ['slimRequest' => $request];
 
         $body = $this->provider->provide($operation, $uriVariables, $context);
 
@@ -60,6 +58,6 @@ final class Api
      */
     private function isMethodSafe(RequestInterface $request): bool
     {
-        return \in_array($request->getMethod(), ['GET', 'HEAD', 'OPTIONS', 'TRACE']);
+        return \in_array($request->getMethod(), ['GET', 'HEAD', 'OPTIONS', 'TRACE'], true);
     }
 }

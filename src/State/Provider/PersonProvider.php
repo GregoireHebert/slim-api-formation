@@ -18,7 +18,7 @@ class PersonProvider implements ProviderInterface
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
         if (null === $person = $this->personRepository->findOneById($uriVariables['identifier'])) {
-            throw new HttpNotFoundException($context['request']);
+            throw new HttpNotFoundException($context['slimRequest']);
         }
 
         return $person;

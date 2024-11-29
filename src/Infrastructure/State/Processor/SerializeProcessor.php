@@ -23,11 +23,11 @@ final class SerializeProcessor implements ProcessorInterface
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = [])
     {
         if ($data instanceof Response || !$operation->canSerialize() || !($request = $context['request'] ?? null)) {
-            return $this->processor ? $this->processor->process($data, $operation, $uriVariables, $context) : $data;
+            return $this->processor->process($data, $operation, $uriVariables, $context);
         }
 
         $serialized = json_encode($this->autoMapper->map($data, 'array'));
 
-        return $this->processor ? $this->processor->process($serialized, $operation, $uriVariables, $context) : $serialized;
+        return $this->processor->process($serialized, $operation, $uriVariables, $context);
     }
 }

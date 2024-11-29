@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\State\Provider;
 
+use ApiPlatform\Metadata\HttpOperation;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use AutoMapper\AutoMapper;
 use AutoMapper\AutoMapperInterface;
 use Psr\Http\Message\RequestInterface;
+use Slim\Psr7\Request;
 
 class DeserializeProvider implements ProviderInterface
 {
@@ -27,8 +29,12 @@ class DeserializeProvider implements ProviderInterface
         }
 
         $request = $context['request'] ?? null;
-        if (!$request instanceof RequestInterface) {
+        if (!$request instanceof Request) {
             throw new \RuntimeException('Request must be an instance of RequestInterface');
+        }
+
+        if (!$operation instanceof HttpOperation) {
+            throw new \RuntimeException('Operation must be an instance of HttpOperation');
         }
 
         $method = $operation->getMethod();

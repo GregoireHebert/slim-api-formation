@@ -3,3 +3,6 @@ parameters:
 	paths:
 		- src
 	inferPrivatePropertyTypeFromConstructor: true
+	ignoreErrors:
+	    -   message: '#has invalid type Illuminate\\Http\\Request.#'
+	    -   message: '#on an unknown class Illuminate\\Http\\Request.#'

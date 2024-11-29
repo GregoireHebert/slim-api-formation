@@ -25,13 +25,13 @@ class WriteProcessor implements ProcessorInterface
             || !($operation->canWrite() ?? true)
             || !$operation->getProcessor()
         ) {
-            return $this->processor ? $this->processor->process($data, $operation, $uriVariables, $context) : $data;
+            return $this->processor->process($data, $operation, $uriVariables, $context);
         }
 
         $processorInstance = $this->container->get($operation->getProcessor());
 
         $data = $processorInstance->process($data, $operation, $uriVariables, $context);
 
-        return $this->processor ? $this->processor->process($data, $operation, $uriVariables, $context) : $data;
+        return $this->processor->process($data, $operation, $uriVariables, $context);
     }
 }
