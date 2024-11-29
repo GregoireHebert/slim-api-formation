@@ -1,0 +1,109 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Method App\\Controller\\Api\:\:__construct\(\) has parameter \$processor with generic interface ApiPlatform\\State\\ProcessorInterface but does not specify its types\: T1, T2$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Controller/Api.php
+
+		-
+			message: '#^Method App\\Controller\\Api\:\:__construct\(\) has parameter \$provider with generic interface ApiPlatform\\State\\ProviderInterface but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Controller/Api.php
+
+		-
+			message: '#^Class App\\Infrastructure\\State\\Processor\\RespondProcessor implements generic interface ApiPlatform\\State\\ProcessorInterface but does not specify its types\: T1, T2$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Infrastructure/State/Processor/RespondProcessor.php
+
+		-
+			message: '#^Class App\\Infrastructure\\State\\Processor\\SerializeProcessor implements generic interface ApiPlatform\\State\\ProcessorInterface but does not specify its types\: T1, T2$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Infrastructure/State/Processor/SerializeProcessor.php
+
+		-
+			message: '#^Method App\\Infrastructure\\State\\Processor\\SerializeProcessor\:\:__construct\(\) has parameter \$processor with generic interface ApiPlatform\\State\\ProcessorInterface but does not specify its types\: T1, T2$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Infrastructure/State/Processor/SerializeProcessor.php
+
+		-
+			message: '#^Class App\\Infrastructure\\State\\Processor\\WriteProcessor implements generic interface ApiPlatform\\State\\ProcessorInterface but does not specify its types\: T1, T2$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Infrastructure/State/Processor/WriteProcessor.php
+
+		-
+			message: '#^Method App\\Infrastructure\\State\\Processor\\WriteProcessor\:\:__construct\(\) has parameter \$processor with generic interface ApiPlatform\\State\\ProcessorInterface but does not specify its types\: T1, T2$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Infrastructure/State/Processor/WriteProcessor.php
+
+		-
+			message: '#^Class App\\Infrastructure\\State\\Provider\\DeserializeProvider implements generic interface ApiPlatform\\State\\ProviderInterface but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Infrastructure/State/Provider/DeserializeProvider.php
+
+		-
+			message: '#^Method App\\Infrastructure\\State\\Provider\\DeserializeProvider\:\:__construct\(\) has parameter \$provider with generic interface ApiPlatform\\State\\ProviderInterface but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Infrastructure/State/Provider/DeserializeProvider.php
+
+		-
+			message: '#^Unable to resolve the template type Target in call to method AutoMapper\\AutoMapperInterface\:\:map\(\)$#'
+			identifier: argument.templateType
+			count: 1
+			path: src/Infrastructure/State/Provider/DeserializeProvider.php
+
+		-
+			message: '#^Class App\\Infrastructure\\State\\Provider\\ReadProvider implements generic interface ApiPlatform\\State\\ProviderInterface but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Infrastructure/State/Provider/ReadProvider.php
+
+		-
+			message: '#^Method App\\Middlewares\\CorsMiddleware\:\:__construct\(\) has parameter \$app with generic class Slim\\App but does not specify its types\: TContainerInterface$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Middlewares/CorsMiddleware.php
+
+		-
+			message: '#^Method App\\Middlewares\\NotAcceptableMiddleware\:\:__construct\(\) has parameter \$app with generic class Slim\\App but does not specify its types\: TContainerInterface$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Middlewares/NotAcceptableMiddleware.php
+
+		-
+			message: '#^Method App\\Repository\\PersonRepository\:\:findAll\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/PersonRepository.php
+
+		-
+			message: '#^Property App\\Repository\\PersonRepository\:\:\$people type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Repository/PersonRepository.php
+
+		-
+			message: '#^Class App\\State\\Processor\\PersonProcessor implements generic interface ApiPlatform\\State\\ProcessorInterface but does not specify its types\: T1, T2$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/State/Processor/PersonProcessor.php
+
+		-
+			message: '#^Class App\\State\\Provider\\PeopleProvider implements generic interface ApiPlatform\\State\\ProviderInterface but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/State/Provider/PeopleProvider.php
+
+		-
+			message: '#^Class App\\State\\Provider\\PersonProvider implements generic interface ApiPlatform\\State\\ProviderInterface but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/State/Provider/PersonProvider.php

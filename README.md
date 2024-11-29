@@ -1,38 +1,33 @@
 # Tester
 
-Tester c'est douter. 
-Douter c'est bien !
-Ça permet d'éviter des oublis.
-
-Avant même de lancer des tests, parfois coûteux en CI, on peut déja se protéger avec de l'analyse statique.
+C'est déjà mieux. Passons au niveau 6, et regardons. Et là, encore plus de rigueur sur le typage.
+C'est trop de travail immédiat, on corrigera petit à petit.
 
 ```shell
-composer require friendsofphp/php-cs-fixer --dev
-composer require phpstan/phpstan --dev
+vendor/bin/phpstan analyse --generate-baseline
 ```
 
-J'ai ajouté à la racine, 2 fichiers de configuration.
+Génère un fichier pour arrêter de réclamer de corriger les erreurs déjà connues.
+Une extension, permet aussi d'ajouter des TODO pour ne pas oublier : https://github.com/staabm/phpstan-todo-by
 
-Lancer la correction syntaxique pour visualiser les problèmes : 
+En l'important dans la configuration de phpstan les erreurs sont ignorées.
+
+```yaml
+includes:
+	- phpstan-baseline.neon
+```
+
+Lorsque vous les corrigez, PHPstan vous dira de retirer les exclusions.
+Il est possible d'ajouter des règles personnalisées, et plusieurs existent.
 
 ```shell
-vendor/bin/php-cs-fixer fix --dry-run --diff
+composer require --dev phpstan/phpstan-deprecation-rules
+composer require --dev phpstan/phpstan-strict-rules
+composer require --dev ergebnis/phpstan-rules
 ```
 
-Puis corrigez-les. Vérifiez toujours avant de les commiter.
-
-```shell
-vendor/bin/php-cs-fixer fix
-```
-
-Ensuite regardez l'analyse statique : 
-
-```shell
-vendor/bin/phpstan analyse
-```
-
-Essayer d'en corriger le plus possible.
-Notez, que vous êtes au niveau 5. Que je vous recommande le niveau 6 au minimum, et qu'il existe 10 niveaux d'exigence.
+Note: Au moment de la préparation de la formation, phpstan 2 est sorti, mais toutes les dépendances ne sont pas encore à jour. 
+peut-être opter pour phpstan 1.x pour en bénéficier.
 
 ## Etape suivante :
 
