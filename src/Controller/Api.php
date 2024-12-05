@@ -26,7 +26,7 @@ final class Api
      */
     public function __invoke(Operation $operation, RequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        $uriVariables = $request->getAttribute('__routingResults__')->getRouteArguments();
+        $uriVariables = $request->getAttribute('__routingResults__')?->getRouteArguments() ?? [];
 
         if (null === $operation->canRead() && $operation instanceof HttpOperation) {
             $operation = $operation->withRead($operation->getUriVariables() || $this->isMethodSafe($request));

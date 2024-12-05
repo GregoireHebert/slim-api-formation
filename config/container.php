@@ -23,6 +23,10 @@ return [
 
         return $app;
     },
+
+    \Psr\Http\Message\ResponseFactoryInterface::class => DI\create(\Slim\Psr7\Factory\ResponseFactory::class),
+    \Psr\Http\Message\ServerRequestFactoryInterface::class => DI\create(\Slim\Psr7\Factory\ServerRequestFactory::class),
+
     AutoMapperInterface::class => static fn() => AutoMapper::create(),
     \App\Infrastructure\State\Provider\ReadProvider::class => DI\autowire(),
     \App\Infrastructure\State\Provider\DeserializeProvider::class => function(ContainerInterface $c) {

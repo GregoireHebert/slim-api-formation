@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         backupGlobals="false"
+         backupStaticProperties="false"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         cacheDirectory=".phpunit.cache">
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <ini name="memory_limit" value="-1"/>
+        <env name="APP_ENV" value="test"/>
+        <env name="PHPUNIT_TEST_SUITE" value="1"/>
+    </php>
+    <coverage />
+    <source ignoreSuppressionOfDeprecations="true" ignoreIndirectDeprecations="true" >
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+        <exclude>
+            <directory>public</directory>
+            <directory>var</directory>
+            <directory>vendor</directory>
+        </exclude>
+    </source>
+    <testsuites>
+        <testsuite name="Slim Project Tests">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

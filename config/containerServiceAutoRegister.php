@@ -28,7 +28,7 @@ function extractFQCNFromFile($filePath) {
         private string $namespace;
 
         public function getFirstClass() {
-            return $this->fqcnList[0] ?? throw new RuntimeException('no class found');
+            return $this->fqcnList[0] ?? null;
         }
 
         public function enterNode(Node $node) {
@@ -74,12 +74,12 @@ function getClassesFromFiles($directory) {
 return function (array $exclude = []) {
     $services = [];
 
-    $composerJsonPath = __DIR__ . '/../composer.json';
+    $composerJsonPath = PROJECT_ROOT_DIR . '/composer.json';
     $namespaces = getComposerNamespaces($composerJsonPath);
 
     foreach ($namespaces as $namespacePrefix => $directory) {
         $classes = getClassesFromFiles($directory);
-        foreach ($classes as $class) {
+        foreach (array_filter($classes) as $class) {
             foreach ($exclude as $excludeNamespace) {
                 if (str_starts_with($class, $excludeNamespace)) {
                     continue 2;
