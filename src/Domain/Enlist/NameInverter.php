@@ -6,7 +6,7 @@ namespace App\Domain\Enlist;
 
 use App\ApiResources\Person;
 
-final readonly class NameInverter
+readonly class NameInverter
 {
     public function convert(Person $person): void
     {

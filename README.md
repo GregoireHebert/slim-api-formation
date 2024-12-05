@@ -1,38 +1,51 @@
-# Tester name inverter
+# Tester Mailer
 
 Code de la correction
 
-## Tester un service
+## Tester un service avec une dépendance
 
-Un service seul, si son action n'a pas d'incidence sur la réponse, ne peux pas juste être testé ainsi.
-Il faut le tester unitairement. C'est-à-dire si je l'appelle en direct, fait-il son travail ?
-
-Créer le service Mailer : 
+Le `PersonProcessor` est un service qui possède des services en dépendances, et dans sa logique une condition.
+Lorsque l'on teste un service, ses dépendances sont souvent ignorées avec des mocks.
+les mocks permettent d'éviter les comportements non désirés comme l'envoie de mail, et de contrôler leur résultat comme dans la gestion des dates. 
 
 ```php
 <?php
 
 declare(strict_types=1);
 
-namespace App\Domain\Mailer;
+namespace App\Tests\State\Processor;
 
-class Mailer
+use App\Domain\Enlist\NameInverter;
+use App\Domain\Mailer\Mailer;
+use App\Repository\PersonRepository;
+use App\State\Processor\PersonProcessor;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
+
+class PersonProcessorTest extends TestCase
 {
-    public function sendMail($subject, $to, $body): bool
+    #[Test]
+    public function process(): void
     {
-        if ($to !== 'gregoire@les-tilleuls.coop') {
-            throw new \RuntimeException('expediteur interdit');
-        }
+        $personRepositoryMock = $this->createMock(PersonRepository::class);
+        $nameInverterMock = $this->createMock(NameInverter::class);
+        $mailerMock = $this->createMock(Mailer::class);
+
+        $processor = new PersonProcessor($personRepositoryMock, $nameInverterMock, $mailerMock);
         
-        return true;
-        // on fait comme si on savait envoyer les emails et gérer les bounces.
+        // ASSERTS
+        $processor->process(
+            //...
+        );
     }
 }
 ```
 
-Appelez-le depuis le processor d'une personne.
-Maintenant testez cette classe seule.
+Le mock est un wrapper. Il y a un souci autour de NameInverter. Discutons-en.
+A présent, testez le processor. Il faut tester tous les cas possibles !
 
-## Etape suivante :
+## Et si votre envoi de mail se faisait par le biais d'un message bus synchrone ?
 
-Aller sur la branche `phpunit-mailer`
+Ce serait plus difficile de s'assurer de son appel.
+C'est pourquoi je vais vous demander d'imaginer une méthode pour savoir d'un service s'il a bien été exploité
+et les inconvénients que cela peux avoir.
