@@ -28,13 +28,13 @@ class DeserializeProvider implements ProviderInterface
             return $data;
         }
 
-        $request = $context['request'] ?? null;
+        $request = $context['slimRequest'] ?? null;
         if (!$request instanceof Request) {
-            throw new \RuntimeException('Request must be an instance of RequestInterface');
+            throw new \RuntimeException('Request must be an instance of RequestInterface '.gettype($request).' given');
         }
 
         if (!$operation instanceof HttpOperation) {
-            throw new \RuntimeException('Operation must be an instance of HttpOperation');
+            throw new \RuntimeException('Operation must be an instance of HttpOperation '.gettype($operation).' given');
         }
 
         $method = $operation->getMethod();

@@ -25,7 +25,7 @@ final class RespondProcessor implements ProcessorInterface
             return $data;
         }
 
-        if (!($request = $context['request'] ?? null) || !$request instanceof Request) {
+        if (!($request = $context['slimRequest'] ?? null) || !$request instanceof Request) {
             return $data;
         }
 

@@ -36,6 +36,8 @@ trait HttpJson
             $request->getBody()->write((string)json_encode($data));
         }
 
+        $request = $request->withHeader('Accept', 'application/json');
+
         return $request->withHeader('Content-Type', 'application/json');
     }
 
@@ -51,7 +53,23 @@ trait HttpJson
     {
         $data = $this->getJsonData($response);
 
-        $this->assertSame($expected, $data);
+        self::assertSame($expected, $data);
+    }
+
+    /**
+     * Verify that the specified array is an exact match for the returned JSON.
+     *
+     * @param array $expected The expected array
+     * @param ResponseInterface $response The response
+     *
+     * @return void
+     */
+    protected function assertJsonDataContains(string $key, mixed $expected, ResponseInterface $response): void
+    {
+        $data = $this->getJsonData($response);
+
+        self::assertArrayHasKey($key, $data);
+        self::assertEquals($expected, $data[$key]);
     }
 
     /**
@@ -64,7 +82,7 @@ trait HttpJson
     protected function getJsonData(ResponseInterface $response): array
     {
         $actual = (string)$response->getBody();
-        $this->assertJson($actual);
+        self::assertJson($actual);
 
         return (array)json_decode($actual, true);
     }
@@ -78,6 +96,6 @@ trait HttpJson
      */
     protected function assertJsonContentType(ResponseInterface $response): void
     {
-        $this->assertStringContainsString('application/json', $response->getHeaderLine('Content-Type'));
+        self::assertStringContainsString('application/json', $response->getHeaderLine('Content-Type'));
     }
 }
