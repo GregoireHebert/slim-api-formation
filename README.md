@@ -16,4 +16,4 @@ Prenons celle fournie par le framework :
 
 ## Etape suivante :
 
-Aller sur la branche `message-psr7`
+Aller sur la branche `hello-world`
